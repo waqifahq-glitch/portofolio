@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio - Waqifah</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#0b1120;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    /* Background Glow */
+    body::before{
+      content:'';
+      position:fixed;
+      width:500px;
+      height:500px;
+      background:#7c3aed;
+      filter:blur(180px);
+      top:-120px;
+      left:-120px;
+      opacity:.4;
+      z-index:-1;
+    }
+
+    body::after{
+      content:'';
+      position:fixed;
+      width:450px;
+      height:450px;
+      background:#06b6d4;
+      filter:blur(170px);
+      bottom:-120px;
+      right:-120px;
+      opacity:.35;
+      z-index:-1;
+    }
+
+    /* Navbar */
+    header{
+      width:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      padding:22px 10%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:rgba(11,17,32,0.7);
+      backdrop-filter:blur(12px);
+      z-index:1000;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo{
+      font-size:28px;
+      font-weight:700;
+      letter-spacing:1px;
+      color:#fff;
+    }
+
+    nav a{
+      text-decoration:none;
+      color:#d1d5db;
+      margin-left:28px;
+      transition:0.3s;
+      font-weight:500;
+    }
+
+    nav a:hover{
+      color:#67e8f9;
+    }
+
+    /* Hero Section */
+    section{
+      padding:120px 10%;
+    }
+
+    .hero{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      align-items:center;
+      gap:60px;
+    }
+
+    .hero-text h3{
+      color:#67e8f9;
+      font-weight:500;
+      margin-bottom:10px;
+    }
+
+    .hero-text h1{
+      font-size:70px;
+      line-height:1.1;
+      margin-bottom:20px;
+    }
+
+    .hero-text h1 span{
+      background:linear-gradient(to right,#67e8f9,#c084fc);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .hero-text p{
+      color:#cbd5e1;
+      line-height:1.8;
+      margin-bottom:35px;
+      font-size:17px;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:15px 35px;
+      border-radius:50px;
+      text-decoration:none;
+      background:linear-gradient(45deg,#8b5cf6,#06b6d4);
+      color:white;
+      font-weight:600;
+      transition:0.4s;
+      box-shadow:0 10px 30px rgba(124,58,237,.4);
+    }
+
+    .btn:hover{
+      transform:translateY(-5px);
+    }
+
+    /* Hero Card */
+    .profile-card{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:30px;
+      padding:40px;
+      backdrop-filter:blur(12px);
+      box-shadow:0 20px 40px rgba(0,0,0,.3);
+    }
+
+    .profile-img{
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      margin:auto;
+      margin-bottom:30px;
+      background:linear-gradient(45deg,#06b6d4,#8b5cf6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:70px;
+      font-weight:bold;
+    }
+
+    .info{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:18px;
+      padding-bottom:10px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .info span:first-child{
+      color:#94a3b8;
+    }
+
+    /* Section Title */
+    .title{
+      text-align:center;
+      font-size:45px;
+      margin-bottom:70px;
+    }
+
+    .title span{
+      color:#67e8f9;
+    }
+
+    /* Cards */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      padding:35px;
+      border-radius:25px;
+      transition:0.4s;
+      backdrop-filter:blur(10px);
+    }
+
+    .card:hover{
+      transform:translateY(-10px);
+      box-shadow:0 20px 40px rgba(0,0,0,.3);
+    }
+
+    .card h3{
+      margin-bottom:18px;
+      color:#67e8f9;
+      font-size:24px;
+    }
+
+    .card p{
+      line-height:1.8;
+      color:#dbe4f0;
+    }
+
+    /* Timeline */
+    .timeline{
+      position:relative;
+      max-width:1000px;
+      margin:auto;
+    }
+
+    .timeline::after{
+      content:'';
+      position:absolute;
+      width:3px;
+      background:#67e8f9;
+      top:0;
+      bottom:0;
+      left:50%;
+      margin-left:-1px;
+    }
+
+    .timeline-box{
+      padding:20px 40px;
+      position:relative;
+      width:50%;
+    }
+
+    .timeline-box.left{
+      left:0;
+      text-align:right;
+    }
+
+    .timeline-box.right{
+      left:50%;
+    }
+
+    .timeline-content{
+      background:rgba(255,255,255,0.06);
+      padding:25px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+    }
+
+    .timeline-content h3{
+      color:#67e8f9;
+      margin-bottom:10px;
+    }
+
+    /* Skills */
+    .skills{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:25px;
+    }
+
+    .skill{
+      background:rgba(255,255,255,0.06);
+      padding:25px;
+      border-radius:20px;
+      text-align:center;
+      border:1px solid rgba(255,255,255,0.08);
+      transition:0.3s;
+    }
+
+    .skill:hover{
+      transform:scale(1.05);
+    }
+
+    .skill h4{
+      font-size:20px;
+    }
+
+    footer{
+      text-align:center;
+      padding:35px;
+      border-top:1px solid rgba(255,255,255,0.08);
+      color:#94a3b8;
+      margin-top:60px;
+    }
+
+    /* Responsive */
+    @media(max-width:900px){
+
+      .hero{
+        grid-template-columns:1fr;
+        text-align:center;
+      }
+
+      .hero-text h1{
+        font-size:50px;
+      }
+
+      .timeline::after{
+        left:20px;
+      }
+
+      .timeline-box{
+        width:100%;
+        padding-left:60px;
+        padding-right:20px;
+      }
+
+      .timeline-box.left,
+      .timeline-box.right{
+        left:0;
+        text-align:left;
+      }
+
+      nav{
+        display:none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="logo">Waqifah.</div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">Tentang</a>
+      <a href="#career">Karier</a>
+      <a href="#skills">Skills</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+
+    <div class="hero-text">
+      <h3>Halo, Saya</h3>
+
+      <h1><span>Waqifah</span></h1>
+
+      <p>
+        Seorang mahasiswa kreatif yang memiliki passion besar
+        dalam dunia teknologi, desain modern, dan pengembangan digital.
+        Saya senang menciptakan pengalaman visual yang elegan,
+        interaktif, dan profesional.
+      </p>
+
+      <a href="#about" class="btn">Lihat Portfolio</a>
+    </div>
+
+    <div class="profile-card">
+
+      <div class="profile-img">
+        W
+      </div>
+
+      <div class="info">
+        <span>Nama</span>
+        <span>Waqifah</span>
+      </div>
+
+      <div class="info">
+        <span>Jenis Kelamin</span>
+        <span>Perempuan</span>
+      </div>
+
+      <div class="info">
+        <span>Pekerjaan</span>
+        <span>Mahasiswa</span>
+      </div>
+
+      <div class="info">
+        <span>Lokasi</span>
+        <span>Jakarta, Indonesia</span>
+      </div>
+
+      <div class="info">
+        <span>Email</span>
+        <span>waqifah.portfolio@mail.com</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- About -->
+  <section id="about">
+
+    <h2 class="title">Tentang <span>Saya</span></h2>
+
+    <div class="grid">
+
+      <div class="card">
+        <h3>Bio</h3>
+
+        <p>
+          Waqifah merupakan mahasiswa yang aktif dalam berbagai
+          kegiatan akademik dan organisasi kreatif. Memiliki minat
+          besar pada UI/UX Design, branding digital, serta pengembangan
+          website modern dengan konsep elegan dan futuristik.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Pengalaman Kerja</h3>
+
+        <p>
+          Pernah bekerja sebagai Creative Designer di Vision Studio
+          selama 2 tahun dan menjadi freelance Social Media Specialist
+          untuk beberapa startup lokal di Indonesia.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Minat & Hobi</h3>
+
+        <p>
+          Menyukai fotografi, desain digital, editing video,
+          traveling, public speaking, membaca buku pengembangan diri,
+          dan eksplorasi tren desain modern.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Career -->
+  <section id="career">
+
+    <h2 class="title">Karier & <span>Pencapaian</span></h2>
+
+    <div class="timeline">
+
+      <div class="timeline-box left">
+        <div class="timeline-content">
+          <h3>2022</h3>
+          <p>
+            Menjadi finalis kompetisi desain kreatif tingkat nasional
+            dengan tema Digital Future Innovation.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-box right">
+        <div class="timeline-content">
+          <h3>2023</h3>
+          <p>
+            Bergabung sebagai Content Creative Intern di perusahaan
+            media digital dan berhasil meningkatkan engagement sosial media.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-box left">
+        <div class="timeline-content">
+          <h3>2024</h3>
+          <p>
+            Membuat proyek website edukasi modern yang digunakan
+            lebih dari 10.000 pengguna mahasiswa.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-box right">
+        <div class="timeline-content">
+          <h3>2025</h3>
+          <p>
+            Mendapat penghargaan “Young Creative Innovator”
+            dalam ajang kreativitas dan teknologi mahasiswa Indonesia.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+
+    <h2 class="title">My <span>Skills</span></h2>
+
+    <div class="skills">
+
+      <div class="skill">
+        <h4>UI/UX Design</h4>
+      </div>
+
+      <div class="skill">
+        <h4>HTML & CSS</h4>
+      </div>
+
+      <div class="skill">
+        <h4>Graphic Design</h4>
+      </div>
+
+      <div class="skill">
+        <h4>Public Speaking</h4>
+      </div>
+
+      <div class="skill">
+        <h4>Content Creator</h4>
+      </div>
+
+      <div class="skill">
+        <h4>Leadership</h4>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2026 Portfolio Waqifah | Modern Elegant Website
+  </footer>
+
+</body>
+</html>
