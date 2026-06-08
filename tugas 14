@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO On-Page Dasar -->
+    <title>Manajemen Data Mahasiswa | Portal Administrasi Akademik Kampus</title>
+    <meta name="description" content="Aplikasi web responsif untuk manajemen data mahasiswa, filter jurusan, pencarian NIM, statistik aktif, dan pemantauan status akademik secara real-time.">
+    <meta name="keywords" content="manajemen mahasiswa, data akademik, portal kampus, sistem informasi akademik, teknik informatika, data mahasiswa">
+    <meta name="author" content="Universitas Developer">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Link Canonical -->
+    <link rel="canonical" href="https://akademik.univ.ac.id/manajemen-mahasiswa">
+
+    <!-- Open Graph / Facebook (Untuk Optimalisasi Berbagi di Sosial Media) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://akademik.univ.ac.id/manajemen-mahasiswa">
+    <meta property="og:title" content="Manajemen Data Mahasiswa | Portal Administrasi Akademik Kampus">
+    <meta property="og:description" content="Kelola data akademis, statistik mahasiswa aktif, dan pencarian jurusan dengan sistem modern yang responsif.">
+    <meta property="og:image" content="https://akademik.univ.ac.id/assets/images/og-preview.jpg">
+
+    <!-- Twitter Card (Untuk Optimalisasi Berbagi di Twitter/X) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://akademik.univ.ac.id/manajemen-mahasiswa">
+    <meta name="twitter:title" content="Manajemen Data Mahasiswa | Portal Administrasi Akademik Kampus">
+    <meta name="twitter:description" content="Kelola data akademis, statistik mahasiswa aktif, dan pencarian jurusan dengan sistem modern yang responsif.">
+    <meta name="twitter:image" content="https://akademik.univ.ac.id/assets/images/og-preview.jpg">
+
+    <!-- JSON-LD Structured Data (Skema WebApplication untuk Mesin Pencari) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Manajemen Data Mahasiswa",
+      "url": "https://akademik.univ.ac.id/manajemen-mahasiswa",
+      "description": "Sistem informasi manajemen data akademik mahasiswa untuk perguruan tinggi.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires HTML5, JavaScript, and CSS support",
+      "author": {
+        "@type": "Organization",
+        "name": "Universitas Developer"
+      }
+    }
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Custom scrollbar untuk estetika modern */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Modal Animation */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+
+    <!-- 1. Modal Component (Bootstrap-style) -->
+    <div id="addModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" aria-modal="true" role="dialog">
+        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm modal-overlay"></div>
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md relative z-10 modal-content scale-95 opacity-0">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">Tambah Mahasiswa Baru</h3>
+                <button onclick="toggleModal()" class="text-slate-400 hover:text-slate-600" aria-label="Tutup Modal"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                    <input type="text" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Contoh: John Doe">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jurusan</label>
+                    <select class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <option>Teknik Informatika</option>
+                        <option>Sistem Informasi</option>
+                        <option>Teknik Komputer</option>
+                    </select>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3 rounded-b-2xl">
+                <button onclick="toggleModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-lg transition-all">Batal</button>
+                <button class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md shadow-indigo-200 transition-all">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gunakan Elemen Semantik Utama -->
+    <main class="p-6">
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- 2. Breadcrumb Component (Semantik & SEO-Friendly) -->
+            <nav class="flex mb-4 text-sm text-slate-500 font-medium" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="#" class="hover:text-indigo-600 flex items-center gap-1">
+                            <i data-lucide="home" class="w-3 h-3"></i> Beranda
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                            <span class="ml-1 md:ml-2">Data Akademik</span>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                            <span class="ml-1 md:ml-2 text-indigo-600 font-bold">Daftar Mahasiswa</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- 3. Alert Component -->
+            <div id="statusAlert" class="mb-6 p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded-r-xl flex items-center justify-between shadow-sm" role="alert">
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-600 p-1.5 rounded-full">
+                        <i data-lucide="info" class="text-white w-4 h-4"></i>
+                    </div>
+                    <span class="text-sm text-indigo-800 font-medium">Sistem berjalan normal. Terdapat 2 mahasiswa baru yang perlu validasi berkas.</span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-indigo-400 hover:text-indigo-600 transition-colors" aria-label="Hapus pemberitahuan">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- 4. Stats Cards (Hierarki Heading yang Tepat) -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8" aria-label="Statistik Mahasiswa">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Total Mahasiswa</p>
+                            <h2 class="text-2xl font-black text-slate-800">1,240</h2>
+                        </div>
+                        <div class="bg-indigo-100 p-3 rounded-xl text-indigo-600">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Aktif Semester Ini</p>
+                            <h2 class="text-2xl font-black text-slate-800">945</h2>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-xl text-green-600">
+                            <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- 5. Progress Bar Component -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">Kuota Server Terpakai</p>
+                    <div class="flex items-center gap-4">
+                        <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
+                            <div class="h-full bg-indigo-600 w-[65%] rounded-full"></div>
+                        </div>
+                        <span class="text-sm font-bold text-slate-700">65%</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 font-medium">Update otomatis setiap 30 menit</p>
+                </div>
+            </section>
+            
+            <!-- Header & Search Bar Area -->
+            <div class="mb-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <!-- Gunakan h1 untuk kata kunci utama / Title halaman demi SEO yang baik -->
+                    <h1 class="text-2xl font-bold text-slate-800">Manajemen Data Mahasiswa</h1>
+                    <!-- 6. Button Group -->
+                    <div class="inline-flex rounded-lg shadow-sm" role="group">
+                        <button class="px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-l-lg hover:bg-indigo-700 border border-indigo-600">Table</button>
+                        <button class="px-3 py-1.5 text-xs font-bold bg-white text-slate-600 hover:bg-slate-50 border border-slate-200">Grid</button>
+                        <button class="px-3 py-1.5 text-xs font-bold bg-white text-slate-600 rounded-r-lg hover:bg-slate-50 border border-slate-200">Map</button>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-3">
+                    <!-- 7. Dropdown Filter -->
+                    <div class="relative inline-block text-left group">
+                        <button class="px-4 py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm text-sm font-semibold text-slate-700 flex items-center gap-2 hover:bg-slate-50 transition-all" aria-haspopup="true">
+                            <i data-lucide="filter" class="w-4 h-4"></i> Filter Jurusan <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="relative">
+                        <label for="searchInput" class="sr-only">Cari Data Mahasiswa</label>
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 transition-colors"></i>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Cari nama, NIM, atau jurusan..."
+                            class="pl-10 pr-4 py-2.5 w-full md:w-64 bg-white border border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-sm"
+                        />
+                    </div>
+                    
+                    <button onclick="toggleModal()" class="px-4 py-2.5 bg-indigo-600 text-white rounded-xl shadow-md shadow-indigo-200 hover:bg-indigo-700 transition-all text-sm font-bold flex items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Baru
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="studentTable">
+                        <!-- Table Header -->
+                        <thead>
+                            <tr class="bg-slate-800 text-white">
+                                <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wider">No</th>
+                                <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wider">Mahasiswa</th>
+                                <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wider">NIM</th>
+                                <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wider">Jurusan</th>
+                                <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-center">Status</th>
+                                <th class="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        
+                        <!-- Table Body -->
+                        <tbody class="divide-y divide-slate-100" id="tableBody">
+                            <!-- Data di-render oleh JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 8. Pagination Component -->
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <span class="text-xs text-slate-500 font-medium" id="dataSummary">
+                        Menampilkan 0 data mahasiswa
+                    </span>
+                    <nav class="flex items-center gap-1" aria-label="Navigasi Halaman Data">
+                        <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-400 hover:bg-slate-50 transition-all text-sm font-semibold disabled:opacity-50" disabled aria-label="Halaman Sebelumnya">
+                            <span class="hidden sm:inline">Sebelumnya</span> <i data-lucide="chevron-left" class="w-4 h-4 inline sm:hidden"></i>
+                        </button>
+                        <button class="px-4 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-bold shadow-sm shadow-indigo-100" aria-current="page">1</button>
+                        <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 text-sm font-semibold hover:border-indigo-400 hover:text-indigo-600 transition-all">2</button>
+                        <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 text-sm font-semibold hover:border-indigo-400 hover:text-indigo-600 transition-all">3</button>
+                        <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-all text-sm font-semibold" aria-label="Halaman Selanjutnya">
+                             <span class="hidden sm:inline">Selanjutnya</span> <i data-lucide="chevron-right" class="w-4 h-4 inline sm:hidden"></i>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Semantik untuk SEO Tambahan -->
+    <footer class="mt-12 py-6 bg-slate-100 border-t border-slate-200 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto px-4">
+            <p>&copy; 2026 Universitas Developer. Semua hak cipta dilindungi undang-undang.</p>
+            <p class="mt-1">Sistem Informasi Akademik yang Teroptimasi SEO dan Aksesibilitas Tinggi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data awal
+        const initialData = [
+            { id: 1, name: 'Budi Santoso', email: 'budi.s@univ.ac.id', nim: '210401001', major: 'Teknik Informatika', status: 'Aktif' },
+            { id: 2, name: 'Siti Aminah', email: 'siti.a@univ.ac.id', nim: '210401002', major: 'Sistem Informasi', status: 'Aktif' },
+            { id: 3, name: 'Andi Wijaya', email: 'andi.w@univ.ac.id', nim: '210401003', major: 'Teknik Komputer', status: 'Cuti' },
+            { id: 4, name: 'Rina Permata', email: 'rina.p@univ.ac.id', nim: '210401004', major: 'Teknik Informatika', status: 'Aktif' },
+            { id: 5, name: 'Dewi Lestari', email: 'dewi.l@univ.ac.id', nim: '210401005', major: 'Manajemen', status: 'Lulus' },
+            { id: 6, name: 'Fajar Ramadhan', email: 'fajar.r@univ.ac.id', nim: '210401006', major: 'Akuntansi', status: 'Aktif' },
+        ];
+
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+        const dataSummary = document.getElementById('dataSummary');
+        const addModal = document.getElementById('addModal');
+
+        // Modal Toggle
+        function toggleModal() {
+            const content = addModal.querySelector('.modal-content');
+            if (addModal.classList.contains('hidden')) {
+                addModal.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            } else {
+                content.classList.add('scale-95', 'opacity-0');
+                content.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => addModal.classList.add('hidden'), 300);
+            }
+        }
+
+        // Fungsi untuk me-render tabel
+        function renderTable(dataToRender) {
+            tableBody.innerHTML = '';
+            
+            if (dataToRender.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-slate-500 italic font-medium">
+                            <i data-lucide="search-x" class="w-10 h-10 mx-auto mb-2 opacity-20"></i>
+                            Data tidak ditemukan. Cobalah kata kunci lain.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                dataToRender.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.className = `${index % 2 !== 0 ? 'bg-slate-50/50' : 'bg-white'} hover:bg-indigo-50/30 transition-colors group`;
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 text-sm text-slate-500 font-medium">${index + 1}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-slate-800 text-sm">${item.name}</span>
+                                <span class="text-[11px] text-slate-400 font-medium uppercase tracking-tight">${item.email}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600 font-mono">${item.nim}</td>
+                        <td class="px-6 py-4 text-sm text-slate-600">${item.major}</td>
+                        <td class="px-6 py-4 text-center">
+                            <!-- 9. Badge Component (Bootstrap-style) -->
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${getStatusClass(item.status)}">
+                                ${item.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end gap-1">
+                                <!-- 10. Tooltip style buttons -->
+                                <button class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Edit Data Mahasiswa ${item.name}">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus Data Mahasiswa ${item.name}">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-all" title="Detail Selengkapnya ${item.name}">
+                                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+            
+            dataSummary.textContent = `Menampilkan ${dataToRender.length} dari ${initialData.length} data mahasiswa`;
+            lucide.createIcons();
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Aktif': return 'bg-green-100 text-green-700 ring-1 ring-inset ring-green-600/20';
+                case 'Cuti': return 'bg-amber-100 text-amber-700 ring-1 ring-inset ring-amber-600/20';
+                default: return 'bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-600/20';
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = initialData.filter(item => 
+                item.name.toLowerCase().includes(term) || 
+                item.nim.includes(term) || 
+                item.major.toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        });
+
+        window.onload = () => {
+            renderTable(initialData);
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
